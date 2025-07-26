@@ -1,0 +1,28 @@
+﻿@model IEnumerable<RobotArmDto>
+
+@{
+    ViewData["Title"] = "Robot Arms";
+}
+
+<h1>Robot Arms</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Created At</th>
+            <th scope="col">Updated At</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var robotArm in Model)
+        {
+            <tr>
+                <td>@robotArm.Name</td>
+                <td>@robotArm.Description</td>
+                <td>@robotArm.CreatedAt.ToShortDateString()</td>
+                <td>@robotArm.UpdatedAt.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>
