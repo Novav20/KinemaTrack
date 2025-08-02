@@ -1,0 +1,41 @@
+﻿@model AddJointCommand
+@{
+    ViewData["Title"] = "Add Joint";
+}
+
+
+<!-- Use a container to provide some padding and centering -->
+<div class="row">
+    <!-- This column will take up about half the screen on medium devices and up -->
+    <div class="col-md-6">
+        <h1>@ViewData["Title"]</h1>
+        <hr />
+        <form method="post" asp-action="AddJoint">
+            <input type="hidden" asp-for="RobotArmId">
+
+            <!-- The validation summary can go here to catch any model-level errors -->
+            <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+            <!-- Use the .mb-3 class for "margin-bottom: 3" to space out form groups -->
+            <div class="mb-3">
+                <!-- Use the "form-label" class for labels -->
+                <label class="form-label" asp-for="LinkLength">Link Length: </label>
+
+                <!-- Use the "form-control" class for inputs. This is the MOST important one. -->
+                <!-- It makes the input block-level and styles it nicely. -->
+                <input class="form-control" asp-for="LinkLength">
+
+                <!-- Use the "text-danger" class for validation messages -->
+                <span asp-validation-for="LinkLength" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <!-- Use "btn" for base button styling and "btn-primary" for the color -->
+                <button type="submit" class="btn btn-primary">Add Joint</button>
+
+                <!-- It's good practice to have a "Cancel" link to go back -->
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

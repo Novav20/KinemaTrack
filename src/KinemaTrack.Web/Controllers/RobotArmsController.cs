@@ -1,29 +1,18 @@
+using KinemaTrack.Application.Features.RobotArms;
 using KinemaTrack.Application.Features.RobotArms.Commands;
 using KinemaTrack.Application.Features.RobotArms.Queries;
 using KinemaTrack.Domain.Entities;
-using KinemaTrack.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace KinemaTrack.Web.Controllers;
 
-public class RobotArmsController(ApplicationDbContext context) : Controller
+public class RobotArmsController(IRobotArmService robotArmService) : Controller
 {
-    // TODO: Move to a UofW, service/repository layer
-    private readonly ApplicationDbContext _context = context;
-
+    private readonly IRobotArmService _robotArmService = robotArmService;
     public async Task<IActionResult> Index()
     {
-        var robotArms = await _context.RobotArms.ToListAsync();
-        var robotArmsDtos = robotArms.Select(x => new RobotArmDto
-        {
-            Id = x.Id,
-            Name = x.Name,
-            Description = x.Description,
-            CreatedAt = x.CreatedAt,
-            UpdatedAt = x.UpdatedAt
-        }).ToList();
-
+        var robotArmsDtos = await _robotArmService.GetAllArmsForDisplayAsync();
         return View(robotArmsDtos);
     }
 
@@ -42,16 +31,37 @@ public class RobotArmsController(ApplicationDbContext context) : Controller
             return View(command);
         }
 
-        var newRobotArm = new RobotArm
-        {
-            Name = command.Name,
-            Description = command.Description,
-        };
-
-        await _context.RobotArms.AddAsync(newRobotArm);
-        await _context.SaveChangesAsync();
+        await _robotArmService.CreateNewArmAsync(command);
 
         return RedirectToAction(nameof(Index));
 
+    }
+
+    [HttpGet]
+    public IActionResult AddJoint(Guid robotArmId)
+    {
+        return View(new AddJointCommand { RobotArmId = robotArmId });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddJoint(AddJointCommand command)
+    {
+        try
+        {
+            await _robotArmService.AddJointAsync(command);
+            return RedirectToAction(nameof(Details), new { id = command.RobotArmId });
+        }
+        catch (ArgumentException ex)
+        {
+            ModelState.AddModelError("RobotArmId", ex.Message);
+            return View(command);
+        }
+    }
+
+    [HttpGet]
+    public IActionResult Details()
+    {
+        return View();
     }
 }
