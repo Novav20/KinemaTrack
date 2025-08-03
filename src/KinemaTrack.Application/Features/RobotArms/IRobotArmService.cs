@@ -1,4 +1,3 @@
-using System;
 using KinemaTrack.Application.Features.RobotArms.Commands;
 using KinemaTrack.Application.Features.RobotArms.Queries;
 
@@ -10,4 +9,6 @@ public interface IRobotArmService
     Task CreateNewArmAsync(CreateRobotArmCommand command);
 
     Task AddJointAsync(AddJointCommand command);
+
+    Task<RobotArmDto> GetRobotArmDetailsAsync(Guid id);
 }

@@ -60,8 +60,17 @@ public class RobotArmsController(IRobotArmService robotArmService) : Controller
     }
 
     [HttpGet]
-    public IActionResult Details()
+    public async Task<IActionResult> Details(Guid id)
     {
-        return View();
+        try
+        {
+            var robotArm = await _robotArmService.GetRobotArmDetailsAsync(id);
+            return View(robotArm);
+        }
+        catch (ArgumentException ex)
+        {
+            ModelState.AddModelError("RobotArmId", ex.Message);
+            return NotFound();
+        }
     }
 }

@@ -1,0 +1,69 @@
+﻿@model RobotArmDto
+@{
+    ViewData["Title"] = "Robot Arm Details";
+}
+
+<h1>@Model.Name</h1>
+<p class="text-muted">Details for the selected robot arm</p>
+<hr />
+
+<!-- Start of the two-column layout -->
+<div class="row">
+
+    <!-- ===== LEFT COLUMN ===== -->
+    <!-- This column will hold the arm details and the joint list -->
+    <div class="col-md-5">
+
+        <!-- Card for Arm Details -->
+        <div class="card mb-3">
+            <div class="card-header">Description</div>
+            <div class="card-body">
+                <p class="card-text">@Model.Description</p>
+            </div>
+        </div>
+
+        <!-- Card for Joints List -->
+        <div class="card">
+            <div class="card-header">Joints</div>
+            <div class="card-body">
+                <!-- A "Create New Joint" button goes here nicely -->
+                <a asp-action="AddJoint" asp-route-robotArmId="@Model.Id" class="btn btn-sm btn-primary mb-3">Add Joint</a>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Angle (&theta;)</th>
+                            <th>Length (mm)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var joint in Model.Joints)
+                        {
+                            <tr>
+                                <td>@joint.JointNumber</td>
+                                <td>@joint.Angle</td>
+                                <td>@joint.LinkLength</td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ===== RIGHT COLUMN ===== -->
+    <!-- This column will hold the canvas for visualization -->
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header">
+                Visualization
+            </div>
+            <div class="card-body text-center"> <!-- text-center can help center the canvas if its smaller -->
+                <canvas id="robot-canvas" width="600" height="600" style="border: 1px solid #d3d3d3"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>

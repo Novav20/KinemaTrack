@@ -49,4 +49,21 @@ public class RobotArmService(IRobotArmRepository robotArmRepository, IJointRepos
             UpdatedAt = r.UpdatedAt
         });
     }
+
+    public async Task<RobotArmDto> GetRobotArmDetailsAsync(Guid id)
+    {
+        var robotArm = await _robotArmRepository.GetByIdAsync(id) ?? throw new ArgumentException($"Robot arm with id {id} not found.");
+        var robotArmDto = new RobotArmDto
+        {
+            Id = robotArm.Id,
+            Name = robotArm.Name,
+            Description = robotArm.Description,
+            CreatedAt = robotArm.CreatedAt,
+            UpdatedAt = robotArm.UpdatedAt,
+            Joints = robotArm.Joints
+        };
+        // TODO: AutoMapper deferred
+
+        return robotArmDto;
+    }
 }

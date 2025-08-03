@@ -20,9 +20,16 @@ public class RobotArmRepository(ApplicationDbContext context) : IRobotArmReposit
         await _context.SaveChangesAsync(); // It's common for a simple AddAsync to also save changes.
     }
 
-    public async Task<RobotArm?> GetByIdAsync(Guid id)
+    public async Task<RobotArm?> GetByIdAsync(Guid id, bool includeJoints = false)
     {
-        var robotArm = await _context.RobotArms.FindAsync(id);
+        var query = _context.RobotArms.AsQueryable();
+
+        if (includeJoints)
+        {
+            query = query.Include(r => r.Joints);
+        }
+
+        var robotArm = await query.FirstOrDefaultAsync(r => r.Id == id);
         return robotArm;
     }
 }

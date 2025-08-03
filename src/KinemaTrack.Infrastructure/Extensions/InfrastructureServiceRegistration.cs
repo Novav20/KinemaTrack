@@ -18,6 +18,7 @@ public static class InfrastructureServiceRegistration
         });
 
         services.AddScoped<IRobotArmRepository, RobotArmRepository>();
+        services.AddScoped<IJointRepository, JointRepository>();
 
         return services;
     }

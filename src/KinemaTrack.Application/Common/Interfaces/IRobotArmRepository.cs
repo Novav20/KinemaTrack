@@ -7,5 +7,5 @@ public interface IRobotArmRepository
 {
     Task<IEnumerable<RobotArm>> GetAllAsync();
     Task AddAsync(RobotArm robotArm);
-    Task<RobotArm?> GetByIdAsync(Guid id);
+    Task<RobotArm?> GetByIdAsync(Guid id, bool includeJoints = false);
 }
