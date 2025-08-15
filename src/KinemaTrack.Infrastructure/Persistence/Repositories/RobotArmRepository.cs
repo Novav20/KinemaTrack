@@ -26,7 +26,7 @@ public class RobotArmRepository(ApplicationDbContext context) : IRobotArmReposit
 
         if (includeJoints)
         {
-            query = query.Include(r => r.Joints);
+            query = query.Include(r => r.Joints.OrderBy(j => j.JointNumber));
         }
 
         var robotArm = await query.FirstOrDefaultAsync(r => r.Id == id);

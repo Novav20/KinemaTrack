@@ -13,13 +13,13 @@ public class RobotArmService(IRobotArmRepository robotArmRepository, IJointRepos
 
     public async Task AddJointAsync(AddJointCommand command)
     {
-        var robotArm = await _robotArmRepository.GetByIdAsync(command.RobotArmId) ?? throw new ArgumentException($"Robot arm with id {command.RobotArmId} not found.");
+        var robotArm = await _robotArmRepository.GetByIdAsync(command.RobotArmId, includeJoints: true) ?? throw new ArgumentException($"Robot arm with id {command.RobotArmId} not found.");
 
         var newJoint = new Joint
         {
             RobotArmId = robotArm.Id,
             LinkLength = command.LinkLength,
-            Angle = 0,
+            Angle = command.Angle * (Math.PI / 180),
             JointNumber = robotArm.Joints.Count + 1
         };
 
@@ -52,7 +52,7 @@ public class RobotArmService(IRobotArmRepository robotArmRepository, IJointRepos
 
     public async Task<RobotArmDto> GetRobotArmDetailsAsync(Guid id)
     {
-        var robotArm = await _robotArmRepository.GetByIdAsync(id) ?? throw new ArgumentException($"Robot arm with id {id} not found.");
+        var robotArm = await _robotArmRepository.GetByIdAsync(id, includeJoints: true) ?? throw new ArgumentException($"Robot arm with id {id} not found.");
         var robotArmDto = new RobotArmDto
         {
             Id = robotArm.Id,
@@ -60,7 +60,13 @@ public class RobotArmService(IRobotArmRepository robotArmRepository, IJointRepos
             Description = robotArm.Description,
             CreatedAt = robotArm.CreatedAt,
             UpdatedAt = robotArm.UpdatedAt,
-            Joints = robotArm.Joints
+            Joints = [.. robotArm.Joints.Select(j => new JointDto
+            {
+                JointNumber = j.JointNumber,
+                AngleInRadians = j.Angle,
+                AngleInDegrees = j.Angle *(180/Math.PI),
+                LinkLength = j.LinkLength
+            })]
         };
         // TODO: AutoMapper deferred
 

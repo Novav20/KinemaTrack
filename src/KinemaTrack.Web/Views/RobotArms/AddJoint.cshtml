@@ -30,6 +30,12 @@
             </div>
 
             <div class="mb-3">
+                <label class="form-label" asp-for="Angle">Angle (in degrees): </label>
+                <input class="form-control" asp-for="Angle">
+                <span asp-validation-for="Angle" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
                 <!-- Use "btn" for base button styling and "btn-primary" for the color -->
                 <button type="submit" class="btn btn-primary">Add Joint</button>
 

@@ -27,12 +27,13 @@
             <div class="card-header">Joints</div>
             <div class="card-body">
                 <!-- A "Create New Joint" button goes here nicely -->
-                <a asp-action="AddJoint" asp-route-robotArmId="@Model.Id" class="btn btn-sm btn-primary mb-3">Add Joint</a>
+                <a asp-action="AddJoint" asp-route-robotArmId="@Model.Id" class="btn btn-sm btn-primary mb-3">Add
+                    Joint</a>
                 <table class="table table-sm">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Angle (&theta;)</th>
+                            <th>Angle (°)</th>
                             <th>Length (mm)</th>
                         </tr>
                     </thead>
@@ -41,7 +42,7 @@
                         {
                             <tr>
                                 <td>@joint.JointNumber</td>
-                                <td>@joint.Angle</td>
+                                <td>@joint.AngleInDegrees</td>
                                 <td>@joint.LinkLength</td>
                             </tr>
 
@@ -65,5 +66,62 @@
             </div>
         </div>
     </div>
-
 </div>
+
+<script>
+    const armData = @Json.Serialize(Model);
+
+    console.log("Robot Arm Data:", armData);
+
+    const canvas = document.getElementById('robot-canvas');
+    const ctx = canvas.getContext('2d');
+
+    const originX = canvas.width / 2;
+    const originY = canvas.height - 50; // 50 px from the bottom
+
+    function drawArm() {
+        // Start with a clean canvas every time we draw
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Initialize our "pen" position and starting angle
+        let currentX = originX;
+        let currentY = originY;
+        let currentAngle = -Math.PI / 2; // Start pointing straight up (Y-axis is inverted)
+
+        // Style the lines
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 5;
+
+        // Draw the Base of the Robot
+        ctx.beginPath();
+        ctx.arc(originX, originY, 10, 0, 2 * Math.PI);
+        ctx.fillStyle = '#6c757d';
+        ctx.fill();
+
+        // Loop through each joint from our C# model data
+        armData.joints.forEach(joint => {
+            currentAngle += joint.angleInRadians;
+
+            const endX = currentX + joint.linkLength * Math.cos(currentAngle);
+            const endY = currentY + joint.linkLength * Math.sin(currentAngle);
+
+            // Draw the link
+            ctx.beginPath();
+            ctx.moveTo(currentX, currentY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+
+            // Draw a small circle for the joint
+            ctx.beginPath();
+            ctx.arc(endX, endY, 7, 0, 2 * Math.PI);
+            ctx.fillStyle = 'blue';
+            ctx.fill();
+
+            // Update the starting point for the *next* link
+            currentX = endX;
+            currentY = endY;
+        });
+    }
+
+    drawArm();
+</script>

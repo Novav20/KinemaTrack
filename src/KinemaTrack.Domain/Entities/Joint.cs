@@ -18,7 +18,7 @@ public class Joint
     public int JointNumber { get; set; }
 
     /// <summary>
-    /// The angle of the joint, also known as the joint variable.
+    /// The angle of the joint, also known as the joint variable. Angle is in radians.
     /// </summary>
     public double Angle { get; set; }
 

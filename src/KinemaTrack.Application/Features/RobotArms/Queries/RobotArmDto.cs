@@ -1,5 +1,3 @@
-using KinemaTrack.Domain.Entities;
-
 namespace KinemaTrack.Application.Features.RobotArms.Queries;
 
 public class RobotArmDto
@@ -9,5 +7,5 @@ public class RobotArmDto
     public string? Description { get; init; }
     public DateTime CreatedAt { get; init; }
     public DateTime UpdatedAt { get; init; } 
-    public ICollection<Joint> Joints { get; init; } // TODO: replace with dto
+    public ICollection<JointDto> Joints { get; init; } 
 }
