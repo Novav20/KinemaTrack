@@ -29,7 +29,8 @@
                 <!-- A "Create New Joint" button goes here nicely -->
                 <a asp-action="AddJoint" asp-route-robotArmId="@Model.Id" class="btn btn-sm btn-primary mb-3">Add
                     Joint</a>
-                <table class="table table-sm">
+                @*
+                 <table class="table table-sm">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -48,7 +49,16 @@
 
                         }
                     </tbody>
-                </table>
+                </table> 
+*@
+                @foreach (var joint in Model.Joints)
+                {
+                    <div class="mb-3">
+                        <label>Joint @joint.JointNumber Angle (°):</label>
+                        <input type="range" class="form-range joint-slider" min="-180" max="180" value="@joint.AngleInDegrees" data-joint-id="@joint.Id">
+                        <span id="angle-readout-@joint.JointNumber">@joint.AngleInDegrees</span>
+                    </div>
+                }
             </div>
         </div>
     </div>

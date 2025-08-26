@@ -62,6 +62,7 @@ public class RobotArmService(IRobotArmRepository robotArmRepository, IJointRepos
             UpdatedAt = robotArm.UpdatedAt,
             Joints = [.. robotArm.Joints.Select(j => new JointDto
             {
+                Id = j.Id,
                 JointNumber = j.JointNumber,
                 AngleInRadians = j.Angle,
                 AngleInDegrees = j.Angle *(180/Math.PI),
