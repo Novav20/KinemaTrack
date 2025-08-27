@@ -55,7 +55,8 @@
                 {
                     <div class="mb-3">
                         <label>Joint @joint.JointNumber Angle (°):</label>
-                        <input type="range" class="form-range joint-slider" min="-180" max="180" value="@joint.AngleInDegrees" data-joint-id="@joint.Id">
+                        <input type="range" class="form-range joint-slider" min="-180" max="180"
+                            value="@joint.AngleInDegrees" data-joint-id="@joint.Id" data-joint-number="@joint.JointNumber">
                         <span id="angle-readout-@joint.JointNumber">@joint.AngleInDegrees</span>
                     </div>
                 }
@@ -81,7 +82,7 @@
 <script>
     const armData = @Json.Serialize(Model);
 
-    console.log("Robot Arm Data:", armData);
+    @* console.log("Robot Arm Data:", armData); *@
 
     const canvas = document.getElementById('robot-canvas');
     const ctx = canvas.getContext('2d');
@@ -132,6 +133,32 @@
             currentY = endY;
         });
     }
+
+    // Get all sliders
+    const jointSliders = document.querySelectorAll('.joint-slider');
+
+    // Loop and attach event listeners
+    jointSliders.forEach(slider => {
+        slider.addEventListener('input', function (event) {
+
+            // Update readout span
+            const slider = event.target;
+            const currentValue = slider.value;
+            @* console.log(slider.dataset); *@
+            const jointNumber = slider.dataset.jointNumber;
+            @* console.log('Joint number VALUE: '+ jointNumber); *@
+            const readout = document.getElementById('angle-readout-' + jointNumber);
+            readout.textContent = currentValue;
+
+            const currentJointId = slider.dataset.jointId;
+            const currentJoint = armData.joints.find(j => j.id == currentJointId);
+            if (currentJoint != null) {
+                currentJoint.angleInRadians = parseFloat(currentValue) * (Math.PI / 180);
+
+                drawArm();
+            }
+        });
+    });
 
     drawArm();
 </script>
