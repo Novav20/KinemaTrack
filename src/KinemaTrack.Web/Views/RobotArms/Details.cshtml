@@ -158,6 +158,31 @@
                 drawArm();
             }
         });
+
+        slider.addEventListener('change', function (event) {
+            @* console.log('Slider value has been committed!'); *@
+            const slider = event.target;
+            const jointIdChanged = slider.dataset.jointId;
+            const newAngleInDegrees = slider.value;
+
+            const payload = {
+                jointId: jointIdChanged,
+                newAngleInDegrees: parseFloat(newAngleInDegrees)
+            };
+
+            $.ajax({
+                url: '/RobotArms/UpdateJointAngle',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(payload),
+                success: function (response) {
+                    console.log('Success! Server responded.', response);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error('Error! Server request failed. ', textStatus, errorThrown);
+                }
+            });
+        });
     });
 
     drawArm();

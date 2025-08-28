@@ -1,9 +1,6 @@
 using KinemaTrack.Application.Features.RobotArms;
 using KinemaTrack.Application.Features.RobotArms.Commands;
-using KinemaTrack.Application.Features.RobotArms.Queries;
-using KinemaTrack.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace KinemaTrack.Web.Controllers;
 
