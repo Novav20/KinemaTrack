@@ -70,4 +70,18 @@ public class RobotArmsController(IRobotArmService robotArmService) : Controller
             return NotFound();
         }
     }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateJointAngle([FromBody] UpdateJointAngleCommand command)
+    {
+        try
+        {
+            await _robotArmService.UpdateJointAngleAsync(command);
+            return Ok();
+        }
+        catch (ArgumentException ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
 }

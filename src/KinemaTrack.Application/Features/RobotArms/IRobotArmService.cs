@@ -11,4 +11,6 @@ public interface IRobotArmService
     Task AddJointAsync(AddJointCommand command);
 
     Task<RobotArmDto> GetRobotArmDetailsAsync(Guid id);
+
+    Task UpdateJointAngleAsync(UpdateJointAngleCommand command);
 }

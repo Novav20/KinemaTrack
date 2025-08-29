@@ -1,5 +1,3 @@
-using System;
-
 namespace KinemaTrack.Application.Features.RobotArms.Commands;
 
 public class AddJointCommand

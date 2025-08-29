@@ -1,4 +1,3 @@
-using System;
 using KinemaTrack.Application.Common.Interfaces;
 using KinemaTrack.Domain.Entities;
 using KinemaTrack.Infrastructure.Data;

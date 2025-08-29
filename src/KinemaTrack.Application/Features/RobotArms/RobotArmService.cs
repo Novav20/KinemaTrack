@@ -1,4 +1,3 @@
-using System;
 using KinemaTrack.Application.Common.Interfaces;
 using KinemaTrack.Application.Features.RobotArms.Commands;
 using KinemaTrack.Application.Features.RobotArms.Queries;
@@ -65,12 +64,24 @@ public class RobotArmService(IRobotArmRepository robotArmRepository, IJointRepos
                 Id = j.Id,
                 JointNumber = j.JointNumber,
                 AngleInRadians = j.Angle,
-                AngleInDegrees = j.Angle *(180/Math.PI),
+                AngleInDegrees = Math.Round(j.Angle *(180/Math.PI), 2), //TODO: Make it a calculated property in the JointDto Entity
                 LinkLength = j.LinkLength
             })]
         };
         // TODO: AutoMapper deferred
 
         return robotArmDto;
+    }
+
+    public async Task UpdateJointAngleAsync(UpdateJointAngleCommand command)
+    {
+        // 1. Get the joint entity from the database
+        var joint = await _jointRepository.GetByIdAsync(command.JointId) ?? throw new ArgumentException($"Joint with id {command.JointId} not found.");
+
+        // 2. Update angle in radians
+        joint.Angle = command.NewAngleInDegrees * (Math.PI / 180);
+
+        // 3. Delegate persistence action to the repository
+        await _jointRepository.UpdateAsync(joint);
     }
 }

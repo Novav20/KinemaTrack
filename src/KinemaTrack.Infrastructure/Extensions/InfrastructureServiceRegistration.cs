@@ -1,4 +1,3 @@
-using System;
 using KinemaTrack.Application.Common.Interfaces;
 using KinemaTrack.Infrastructure.Data;
 using KinemaTrack.Infrastructure.Persistence.Repositories;

@@ -1,4 +1,3 @@
-using System;
 using KinemaTrack.Application.Features.RobotArms;
 using Microsoft.Extensions.DependencyInjection;
 
