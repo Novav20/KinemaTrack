@@ -11,7 +11,7 @@
 <div class="row">
 
     <!-- ===== LEFT COLUMN ===== -->
-    <!-- This column will hold the arm details and the joint list -->
+    <!-- This column will hold the arm details and the joint sliders -->
     <div class="col-md-5">
 
         <!-- Card for Arm Details -->
@@ -22,35 +22,13 @@
             </div>
         </div>
 
-        <!-- Card for Joints List -->
+        <!-- Card for Joints sliders -->
         <div class="card">
             <div class="card-header">Joints</div>
             <div class="card-body">
                 <!-- A "Create New Joint" button goes here nicely -->
                 <a asp-action="AddJoint" asp-route-robotArmId="@Model.Id" class="btn btn-sm btn-primary mb-3">Add
                     Joint</a>
-                @*
-                 <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Angle (°)</th>
-                            <th>Length (mm)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var joint in Model.Joints)
-                        {
-                            <tr>
-                                <td>@joint.JointNumber</td>
-                                <td>@joint.AngleInDegrees</td>
-                                <td>@joint.LinkLength</td>
-                            </tr>
-
-                        }
-                    </tbody>
-                </table> 
-*@
                 @foreach (var joint in Model.Joints)
                 {
                     <div class="mb-3">
@@ -60,6 +38,16 @@
                         <span id="angle-readout-@joint.JointNumber">@joint.AngleInDegrees</span>
                     </div>
                 }
+                <div id="save-status" class="mt-3"></div>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <div class="card-header">
+                End-Effector Position
+            </div>
+            <div class="card-body">
+                <p><strong>X:</strong><span id="x-coord-readout"></span></p>
+                <p><strong>Y:</strong><span id="y-coord-readout"></span></p>
             </div>
         </div>
     </div>
@@ -132,6 +120,17 @@
             currentX = endX;
             currentY = endY;
         });
+
+        const xReadout = document.getElementById('x-coord-readout');
+        const yReadout = document.getElementById('y-coord-readout');
+
+        // Calculate display coordinates (adjusting for origin and Y-axis inversion)
+        const displayX = currentX - originX;
+        const displayY = - (currentY - originY); // Flip the Y-axis sign
+
+        // Update the UI
+        xReadout.textContent = displayX.toFixed(2) + 'mm';
+        yReadout.textContent = displayY.toFixed(2) + 'mm';
     }
 
     // Get all sliders
@@ -161,6 +160,7 @@
 
         slider.addEventListener('change', function (event) {
             @* console.log('Slider value has been committed!'); *@
+            const statusDiv = document.getElementById('save-status');
             const slider = event.target;
             const jointIdChanged = slider.dataset.jointId;
             const newAngleInDegrees = slider.value;
@@ -175,11 +175,22 @@
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(payload),
+                beforeSend: function () {
+                    statusDiv.textContent = 'Saving...';
+                    statusDiv.className = 'text-info';
+                },
                 success: function (response) {
-                    console.log('Success! Server responded.', response);
+                    statusDiv.textContent = 'Saved!';
+                    statusDiv.className = 'text-success';
+
+                    // Fade out the message after a couple of seconds
+                    setTimeout(function () {
+                        statusDiv.textContent = '';
+                    }, 2000);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    console.error('Error! Server request failed. ', textStatus, errorThrown);
+                    statusDiv.textContent = 'Error saving angle.';
+                    statusDiv.className = 'text-danger';
                 }
             });
         });
